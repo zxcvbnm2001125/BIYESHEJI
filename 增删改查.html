@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>信息修改模块
+    </title>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.23/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.23/"></script>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+
+      .esri-editor .esri-item-list__scroller {
+        max-height: 350px;
+      }
+    </style>
+
+    <script>
+      require(["esri/WebMap", "esri/views/MapView", "esri/widgets/Editor","esri/widgets/Search","esri/layers/FeatureLayer"], (
+        WebMap,
+        MapView,
+        Editor,
+        Search,
+        FeatureLayer
+      ) => {
+        let pointLayer, lineLayer, polygonLayer;
+
+        // Create a map from the referenced webmap item id
+        const webmap = new WebMap({
+          portalItem: {
+            id: "34aa3e2013ed42c689bef839788b2d0a"
+          }
+        });
+
+
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: webmap
+        });
+
+        
+
+        view.when(() => {
+          view.popup.antoOpenEnabled = false;
+            const editor = new Editor({
+              view: view,
+            });
+
+            // Add the widget to the view
+            view.ui.add(editor, "top-right");
+          });
+        });
+      
+    </script>
+  </head>
+
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>

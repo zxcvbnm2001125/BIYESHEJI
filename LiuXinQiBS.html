@@ -1,0 +1,216 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>
+      Edit features with the Editor widget | Sample | ArcGIS Maps SDK for
+      JavaScript 4.26
+    </title>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.26/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.26/"></script>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+
+    <script>
+      require(["esri/WebMap", "esri/views/MapView", "esri/widgets/Editor", "esri/layers/FeatureLayer", "esri/widgets/Search"], (
+        WebMap,
+        MapView,
+        Editor,FeatureLayer, Search
+      ) => {
+        let pointLayer, lineLayer, polygonLayer;
+        // const apiKey = "AAPKbd58c83f4e614e339683ed01044e628eb3fCCu6QkGEO3aNx8qstbjwwWfyvedKrQac8fYT7BGkrRE2p9NZfeeLHtZrnb_bj";
+
+        // Create a map from the referenced webmap item id
+        const webmap = new WebMap({
+          portalItem: {
+            //id: "459a495fc16d4d4caa35e92e895694c8"
+            // id:"4dafe83b5b444c4aa12b35116f13c9e4"
+            id:"4dafe83b5b444c4aa12b35116f13c9e4"
+          }
+        });
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: webmap
+        });
+
+        const featureLayerjz = new FeatureLayer({
+                url: "https://services3.arcgis.com/PVd7nElk0F9SmeMB/arcgis/rest/services/SDU/FeatureServer/0",//自己的要素服务url
+                popupTemplate: {
+                    title: "地点 </br>{name},({information})", //括号内为想要显示的字段名称
+                    overwriteActions: true
+                }
+            });
+            // const featureLayerdl = new FeatureLayer({
+            //     url: "https://services3.arcgis.com/PVd7nElk0F9SmeMB/arcgis/rest/services/LiuXinQiBS/FeatureServer/1",
+            //     popupTemplate: {
+            //         title: "区域 </br>{Schname},({Information})",
+            //         overwriteActions: true
+            //     }
+            // });
+            const featureLayercc = new FeatureLayer({
+                url: "https://services3.arcgis.com/PVd7nElk0F9SmeMB/arcgis/rest/services/%E5%B1%B1%E4%B8%9C%E7%9C%8103/FeatureServer/2",
+                popupTemplate: {
+                    title: "城市 </br>{name}",
+                    overwriteActions: true
+                }
+            });
+
+            
+        view.when(() => {
+          view.map.loadAll().then(() => {
+            view.map.editableLayers.forEach((layer) => {
+              if (layer.type === "feature") {
+                switch (layer.geometryType) {
+                  case "polygon":
+                    polygonLayer = layer;
+                    break;
+                  case "polyline":
+                    lineLayer = layer;
+                    break;
+                  case "point":
+                    pointLayer = layer;
+                    break;
+                }
+              }
+            });
+
+            // Create layerInfos for layers in Editor. This
+            // sets the fields for editing.
+
+            const pointInfos = {
+              layer: pointLayer,
+              formTemplate: {
+                // autocasts to FormTemplate
+                elements: [
+                  {
+                    // autocasts to Field Elements
+                    type: "field",
+                    fieldName: "name",
+                    label: "学校名称"
+                  },
+                  {
+                    type: "field",
+                    fieldName: "information",
+                    label: "招生信息"
+                  }
+                ]
+              }
+            };
+
+            const lineInfos = {
+              layer: lineLayer,
+              formTemplate: {
+                // autocasts to FormTemplate
+                elements: [
+                  {
+                    // autocasts to Field Elements
+                    type: "field",
+                    fieldName: "name",
+                    label: "学校名称"
+                  },
+                  {
+                    type: "field",
+                    fieldName: "information",
+                    label: "招生信息"
+                  }
+                ]
+              }
+            };
+
+            const polyInfos = {
+              layer: polygonLayer,
+              formTemplate: {
+                // autocasts to FormTemplate
+                elements: [
+                  {
+                    // autocasts to FieldElement
+                    type: "field",
+                    fieldName: "incidenttype",
+                    label: "Incident Type"
+                  },
+                  {
+                    type: "field",
+                    fieldName: "activeincid",
+                    label: "Active"
+                  },
+                  {
+                    type: "field",
+                    fieldName: "descrip",
+                    label: "Description"
+                  }
+                ]
+              }
+            };
+
+            const searchWidget = new Search({
+                view: view,
+                allPlaceholder: "输入",
+                includeDefaultSources: false,
+                sources: [
+                    {
+                        layer: featureLayerjz,
+                        searchFields: ["name"],
+                        displayField: "name",
+                        exactMatch: false,
+                        outFields: ["name", "information"],
+                        name: "学校名称",
+                        placeholder: "例如：山东交通学院"
+                    },
+                    {
+                        layer: featureLayerdl,
+                        searchFields: ["Schname"],
+                        displayField: "Schname",
+                        exactMatch: false,
+                        outFields: ["Schname", "Information"],
+                        name: "学校名称",
+                        placeholder: "例如：山东交通学院"
+                    },
+                    {
+                        layer: featureLayercc,
+                        searchFields: ["name"],
+                        displayField: "name",
+                        exactMatch: false,
+                        outFields: ["name"],
+                        name: "城市",
+                        placeholder: "例如：济南"
+                    },
+                ]
+            });
+            view.ui.add(searchWidget, {
+                position: "top-left"
+            });
+
+            const editor = new Editor({
+              view: view,
+              layerInfos: [pointInfos, lineInfos, polyInfos]
+            });
+
+            // Add the widget to the view
+            view.ui.add(editor, "top-right");
+          });
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>

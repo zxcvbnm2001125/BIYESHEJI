@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>加载二维景点地图</title>
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.25/esri/themes/light/main.css">
+    <script src="https://js.arcgis.com/4.25/"></script>
+</head>
+<body>
+    <div id="viewDiv"></div>
+</body>
+<script>
+   require([
+          "esri/config",
+          "esri/Map",
+          "esri/views/MapView", 
+          "esri/WebMap"  
+        ], function (esriConfig,
+        Map, 
+        MapView,
+        WebMap
+        ) {
+         
+        //  const map = new Map({
+         // basemap: "arcgis-topographic"    //osm
+       //   });
+     
+      var webmap = new WebMap({
+          portalItem: {id:"0efee25db12a4dfaa3886b014f2cbaa2"},
+        });
+          const view = new MapView({
+            map: webmap,
+            container: "viewDiv"
+          }); 
+
+           
+        })
+</script>
+</html>
