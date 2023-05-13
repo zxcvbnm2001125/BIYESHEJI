@@ -6,8 +6,7 @@
       name="viewport"
       content="initial-scale=1, maximum-scale=1,user-scalable=no"
     />
-    <title>
-      FeatureTable with a map | Sample | ArcGIS Maps SDK for JavaScript 4.26
+    <title>图表联动
     </title>
 
     <link
@@ -57,15 +56,15 @@
         const view = new MapView({
           container: "viewDiv",
           map: webmap,
-          center: [116.799667,36.542508],
-          zoom: 12,
+          center: [105.799667,36.542508],
+          zoom: 3,
           popup: {
             autoOpenEnabled: false
           } // Disable popups
         });
 
         view.when(() => {
-          const featureLayer = webmap.layers.getItemAt(0); // Grabs the first layer in the map
+          const featureLayer = webmap.layers.getItemAt(1); // Grabs the first layer in the map
           featureLayer.title = "详细信息显示";
 
           // Create the feature table
@@ -98,7 +97,37 @@
                   type: "field",
                   fieldName: "information",
                   label: "招生信息"
-                }
+                },
+                {
+                  type: "field",
+                  fieldName: "FS2018",
+                  label: "2018年分数线"
+                },
+                {
+                  type: "field",
+                  fieldName: "FS2019",
+                  label: "2019年分数线"
+                },
+                {
+                  type: "field",
+                  fieldName: "FS2020",
+                  label: "2020年分数线"
+                },
+                {
+                  type: "field",
+                  fieldName: "FS2021",
+                  label: "2021年分数线"
+                },
+                {
+                  type: "field",
+                  fieldName: "FS2022",
+                  label: "2022年分数线"
+                },
+                {
+                  type: "field",
+                  fieldName: "AVER",
+                  label: ""
+                },
               ]
             },
             container: document.getElementById("tableDiv")
